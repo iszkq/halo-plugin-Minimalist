@@ -1,7 +1,7 @@
 apiVersion: notification.halo.run/v1alpha1
 kind: ReasonType
 metadata:
-  name: new-comment-on-moment
+  name: minimalist-new-comment-on-moment
 spec:
   displayName: "我发布的瞬间收到新评论"
   description: "当你发布的瞬间收到新评论时，你将会收到一条通知，告诉你有新的评论。"
@@ -30,10 +30,10 @@ spec:
 apiVersion: notification.halo.run/v1alpha1
 kind: NotificationTemplate
 metadata:
-  name: template-new-comment-on-moment
+  name: template-minimalist-new-comment-on-moment
 spec:
   reasonSelector:
-    reasonType: new-comment-on-moment
+    reasonType: minimalist-new-comment-on-moment
     language: default
   template:
     title: "[(${commenter})] 评论了你在 [(${momentCreatedAt})] 时刻发布的瞬间"

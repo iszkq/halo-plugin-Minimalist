@@ -39,7 +39,7 @@ import run.halo.moments.vo.MomentVo;
  * @author LIlGG
  * @since 1.0.0
  */
-@Finder("momentFinder")
+@Finder("minimalistMomentFinder")
 @RequiredArgsConstructor
 public class MomentFinderImpl implements MomentFinder {
     private final ReactiveExtensionClient client;

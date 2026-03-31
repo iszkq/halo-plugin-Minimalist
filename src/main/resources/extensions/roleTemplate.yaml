@@ -1,7 +1,7 @@
 apiVersion: v1alpha1
 kind: Role
 metadata:
-  name: role-template-moments-view
+  name: role-template-minimalist-moments-view
   labels:
     halo.run/role-template: "true"
   annotations:
@@ -20,7 +20,7 @@ rules:
 apiVersion: v1alpha1
 kind: Role
 metadata:
-  name: role-template-moments-manage
+  name: role-template-minimalist-moments-manage
   labels:
     halo.run/role-template: "true"
   annotations:
@@ -29,7 +29,7 @@ metadata:
     rbac.authorization.halo.run/ui-permissions: |
       ["plugin:moments:manage"]
     rbac.authorization.halo.run/dependencies: |
-      ["role-template-moments-view"]
+      ["role-template-minimalist-moments-view"]
 rules:
   - apiGroups: ["moment.halo.run"]
     resources: ["moments"]
@@ -41,7 +41,7 @@ rules:
 apiVersion: v1alpha1
 kind: Role
 metadata:
-  name: role-template-uc-moments-publish
+  name: role-template-uc-minimalist-moments-publish
   labels:
     halo.run/role-template: "true"
   annotations:
@@ -57,21 +57,21 @@ rules:
 apiVersion: v1alpha1
 kind: Role
 metadata:
-  name: role-template-uc-moments-approved
+  name: role-template-uc-minimalist-moments-approved
   labels:
     halo.run/role-template: "true"
   annotations:
     rbac.authorization.halo.run/module: "瞬间"
     rbac.authorization.halo.run/display-name: "发布瞬间无需审核"
     rbac.authorization.halo.run/dependencies: |
-      ["role-template-uc-moments-publish"]
+      ["role-template-uc-minimalist-moments-publish"]
 rules:
   - nonResourceURLs: ["*"]
 ---
 apiVersion: v1alpha1
 kind: Role
 metadata:
-  name: role-template-uc-moments-delete
+  name: role-template-uc-minimalist-moments-delete
   labels:
     halo.run/role-template: "true"
   annotations:
@@ -87,7 +87,7 @@ rules:
 apiVersion: v1alpha1
 kind: "Role"
 metadata:
-  name: role-template-moments-anonymous
+  name: role-template-minimalist-moments-anonymous
   labels:
     halo.run/role-template: "true"
     halo.run/hidden: "true"

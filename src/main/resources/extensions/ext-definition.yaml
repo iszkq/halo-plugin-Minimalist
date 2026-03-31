@@ -1,7 +1,7 @@
 apiVersion: plugin.halo.run/v1alpha1
 kind: ExtensionDefinition
 metadata:
-  name: moment-rss-provider
+  name: minimalist-moment-rss-provider
 spec:
   className: run.halo.moments.rss.MomentRssProvider
   extensionPointName: feed-rss-route-item
@@ -11,7 +11,7 @@ spec:
 apiVersion: plugin.halo.run/v1alpha1
 kind: ExtensionDefinition
 metadata:
-  name: moment-old-rss-redirection-filter
+  name: minimalist-moment-old-rss-redirection-filter
 spec:
   className: run.halo.moments.rss.OldRssRouteRedirectionFilter
   extensionPointName: additional-webfilter
