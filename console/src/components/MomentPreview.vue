@@ -146,24 +146,24 @@ defineOptions({
       </span>
     </template>
   </PreviewDetailModal>
-  <div class=":uno: relative overflow-hidden" @dblclick="handleSwitchEdit">
+  <div class=":uno: moment-preview-card relative overflow-hidden" @dblclick="handleSwitchEdit">
     <div
       v-lazy
       v-tag
       v-shiki
-      class=":uno: markdown-body moment-preview-html"
+      class=":uno: markdown-body moment-preview-html moment-preview-copy"
       v-html="moment.moment.spec.content.html"
     ></div>
 
     <div
       v-if="!!moment.moment.spec.content.medium && moment.moment.spec.content.medium.length > 0"
-      class=":uno: img-box flex pt-2"
+      class=":uno: moment-preview-media img-box flex pt-2"
     >
-      <ul class=":uno: grid grid-cols-3 w-full gap-1.5 sm:w-1/2 !pl-0" role="list">
+      <ul class=":uno: grid grid-cols-3 w-full gap-2 sm:w-[25rem] !pl-0" role="list">
         <li
           v-for="(media, index) in moment.moment.spec.content.medium"
           :key="index"
-          class=":uno: inline-block cursor-pointer overflow-hidden border rounded-md"
+          class=":uno: moment-preview-media-item inline-block cursor-pointer overflow-hidden"
         >
           <div class=":uno: aspect-square" @click="handleClickMedium(index)">
             <template v-if="media.type == 'PHOTO'">
@@ -198,13 +198,13 @@ defineOptions({
       </ul>
     </div>
 
-    <div class=":uno: mt-4 flex items-center gap-3">
-      <div class=":uno: inline-flex items-center gap-1 text-gray-600 hover:text-gray-900">
+    <div class=":uno: moment-preview-actions mt-4 flex items-center gap-3">
+      <div class=":uno: moment-preview-action inline-flex items-center gap-1 text-gray-600 hover:text-gray-900">
         <RiHeart3Line />
         <span class=":uno: text-sm">{{ moment.stats.upvote }}</span>
       </div>
       <div
-        class=":uno: group inline-flex cursor-pointer items-center gap-1 text-gray-600 hover:text-gray-900"
+        class=":uno: moment-preview-action group inline-flex cursor-pointer items-center gap-1 text-gray-600 hover:text-gray-900"
         @click="handleOpenCommentList"
       >
         <IconMessage />

@@ -136,12 +136,20 @@ usePluginShikiScriptLoader();
       <MingcuteMomentsLine />
     </template>
   </VPageHeader>
-  <VCard class=":uno: m-0 flex-1 md:m-4">
-    <div class=":uno: mx-auto max-w-4xl px-4 md:px-8">
-      <div class=":uno: moments-content my-2 flex flex-col md:my-4 space-y-2">
+  <VCard class=":uno: moments-console-board m-0 flex-1 md:m-4">
+    <div class=":uno: mx-auto max-w-5xl px-4 md:px-8">
+      <div class=":uno: moments-content moments-console-shell my-2 flex flex-col md:my-4 space-y-3">
+        <section class=":uno: moments-console-hero">
+          <div class=":uno: moments-console-copy">
+            <span class=":uno: moments-console-kicker">MINIMALIST MOMENTS</span>
+            <h2>像朋友圈一样发布，但更干净、更高级</h2>
+            <p>发图文、音视频和评论互动，都收进一套统一的瞬间体验里。</p>
+          </div>
+          <div class=":uno: moments-console-chip">{{ total || 0 }} 条记录</div>
+        </section>
         <MomentEdit />
 
-        <div class=":uno: moment-header pb-2 pt-8">
+        <div class=":uno: moment-header moments-console-toolbar pb-2 pt-4">
           <div class=":uno: flex flex-col justify-between sm:flex-row space-x-2">
             <div class=":uno: left-0 mb-2 mr-2 flex items-center sm:mb-0">
               <TagFilterDropdown v-model="tag" :label="'标签'"></TagFilterDropdown>
@@ -165,7 +173,7 @@ usePluginShikiScriptLoader();
         <Transition v-else appear name="fade">
           <ul
             v-if="moments && moments.length > 0"
-            class=":uno: box-border flex flex-col space-y-2"
+            class=":uno: box-border flex flex-col space-y-3"
             role="list"
           >
             <li v-for="moment in moments" :key="moment.moment.metadata.name">

@@ -149,9 +149,25 @@ watch(
 
 <style lang="scss">
 .halo-moment-editor {
+  border: 1px solid #e6ebf2;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.96), rgba(247, 250, 253, 0.96)),
+    #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 18px 40px rgba(15, 23, 42, 0.04);
+  overflow: hidden;
+
+  .editor-content {
+    background: transparent;
+  }
+
   .ProseMirror {
-    padding-bottom: 2rem !important;
-    padding-top: 2rem !important;
+    min-height: 12rem;
+    padding: 1.4rem 1.5rem 2rem !important;
+    font-size: 1rem;
+    line-height: 1.9;
   }
 }
 </style>

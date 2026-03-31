@@ -47,7 +47,7 @@ const getExtname = (type?: string) => {
 };
 </script>
 <template>
-  <div class=":uno: relative overflow-hidden">
+  <div class=":uno: moment-media-card relative overflow-hidden">
     <template v-if="media.type == 'PHOTO'">
       <div class=":uno: aspect-square">
         <img
@@ -93,7 +93,7 @@ const getExtname = (type?: string) => {
         </div>
       </div>
     </template>
-    <label class=":uno: absolute right-1 top-1 cursor-pointer">
+    <label class=":uno: moment-media-remove absolute right-2 top-2 cursor-pointer">
       <MingCloseCircle class=":uno: text-gray-700" @click="handleRemoveClick" />
     </label>
   </div>

@@ -296,7 +296,7 @@ function handleKeydown(event: KeyboardEvent) {
 </script>
 
 <template>
-  <div class=":uno: card shrink overflow-hidden border rounded-md bg-white">
+  <div class=":uno: moment-composer card shrink overflow-hidden">
     <AttachmentSelectorModal
       v-model:visible="attachmentSelectorModal"
       v-permission="['system:attachments:view']"
@@ -305,39 +305,62 @@ function handleKeydown(event: KeyboardEvent) {
       :accepts="accepts"
       @select="onAttachmentsSelect"
     />
+    <div class=":uno: moment-composer-shell">
+      <div class=":uno: moment-composer-header">
+        <div class=":uno: moment-composer-copy">
+          <span class=":uno: moment-composer-kicker">
+            {{ isUpdateMode ? "EDIT MOMENT" : "NEW MOMENT" }}
+          </span>
+          <strong>{{ isUpdateMode ? "完善一下这条瞬间" : "发一条更像朋友圈的动态" }}</strong>
+          <p>{{ formState.spec.content.medium?.length || 0 }}/9 个附件 · Ctrl + Enter 快速发布</p>
+        </div>
+        <button
+          v-tooltip="{
+            content: formState.spec.visible === 'PRIVATE' ? '仅自己可见' : '所有访客可见',
+          }"
+          type="button"
+          class=":uno: moment-visibility-toggle"
+          :class="formState.spec.visible === 'PRIVATE' ? ':uno: is-private' : ':uno: is-public'"
+          @click="handleToggleVisible()"
+        >
+          <IconEyeOff v-if="formState.spec.visible === 'PRIVATE'" class=":uno: text-base" />
+          <IconEye v-else class=":uno: text-base" />
+          <span>{{ formState.spec.visible === "PRIVATE" ? "仅自己可见" : "公开可见" }}</span>
+        </button>
+      </div>
+      <div class=":uno: moment-composer-editor-wrap">
     <TextEditor
       v-model:raw="formState.spec.content.raw"
       v-model:html="formState.spec.content.html"
       v-model:isEmpty="isEditorEmpty"
       :tag-query-fetch="useUCTagQueryFetch"
-      class=":uno: min-h-[9rem]"
+      class=":uno: moment-composer-editor min-h-[11rem]"
       tabindex="-1"
       @keydown="handleKeydown"
     />
-    <div v-if="formState.spec.content.medium?.length" class=":uno: img-box flex px-3.5 py-2">
-      <ul class=":uno: grid grid-cols-3 w-full gap-1.5 sm:w-1/2" role="list">
+      </div>
+    <div v-if="formState.spec.content.medium?.length" class=":uno: moment-composer-media img-box flex">
+      <ul class=":uno: grid grid-cols-3 w-full gap-2 sm:w-[25rem]" role="list">
         <li
           v-for="(media, index) in formState.spec.content.medium"
           :key="index"
-          class=":uno: inline-block overflow-hidden border rounded-md"
+          class=":uno: moment-composer-media-item inline-block overflow-hidden"
         >
           <MediaCard :media="media" @remove="removeMedium"></MediaCard>
         </li>
       </ul>
     </div>
-    <div class=":uno: flex justify-between bg-white px-3.5 py-2">
-      <div class=":uno: h-fit">
-        <div
-          class=":uno: group flex cursor-pointer items-center justify-center rounded-full p-2 hover:bg-sky-600/10"
-        >
-          <TablerPhoto
-            class=":uno: size-full text-base text-gray-600 group-hover:text-sky-600"
-            @click="addMediumVerify() && (attachmentSelectorModal = true)"
-          />
-        </div>
-      </div>
+    <div class=":uno: moment-composer-footer">
+      <button
+        type="button"
+        class=":uno: moment-attach-button"
+        @click="addMediumVerify() && (attachmentSelectorModal = true)"
+      >
+        <TablerPhoto class=":uno: moment-attach-icon" />
+        <span>添加图片 / 视频 / 音频</span>
+      </button>
 
-      <div class=":uno: flex items-center space-x-2.5">
+      <div class=":uno: moment-composer-actions">
         <div
           v-tooltip="{
             content: formState.spec.visible === 'PRIVATE' ? `私有访问` : '公开访问',
@@ -362,7 +385,8 @@ function handleKeydown(event: KeyboardEvent) {
 
         <button
           v-if="isUpdateMode"
-          class=":uno: h-7 inline-flex cursor-pointer items-center rounded px-3 text-gray-600 hover:bg-sky-600/10 hover:text-sky-600"
+          type="button"
+          class=":uno: moment-secondary-action"
           @click="handlerCancel"
         >
           <span class=":uno: text-xs"> 取消 </span>
@@ -374,14 +398,17 @@ function handleKeydown(event: KeyboardEvent) {
             :loading="saving"
             size="sm"
             type="primary"
+            class=":uno: moment-primary-action"
             @click="handlerCreateOrUpdateMoment"
           >
             <template #icon>
-              <SendMoment class=":uno: size-full scale-[1.35]" />
+              <SendMoment class=":uno: size-full scale-[1.1]" />
             </template>
+            {{ isUpdateMode ? "保存瞬间" : "发布瞬间" }}
           </VButton>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </template>

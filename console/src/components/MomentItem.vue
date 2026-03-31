@@ -79,19 +79,19 @@ const handleApproved = async () => {
 </script>
 <template>
   <div>
-    <div class=":uno: card preview relative shrink border-t border-gray-100 bg-white py-6">
-      <div class=":uno: flex items-start gap-3">
+    <div class=":uno: moment-feed-card preview relative shrink py-6">
+      <div class=":uno: moment-feed-row flex items-start gap-3">
         <VAvatar
           :alt="owner?.displayName"
           :src="owner?.avatar"
-          size="md"
+          size="lg"
           circle
-          class=":uno: flex-none"
+          class=":uno: moment-feed-avatar flex-none"
         ></VAvatar>
         <div class=":uno: min-w-0 flex-1 shrink">
-          <div class=":uno: flex items-center justify-between">
+          <div class=":uno: moment-feed-head flex items-center justify-between">
             <div class=":uno: flex items-center space-x-3">
-              <div>
+              <div class=":uno: moment-feed-author">
                 <b> {{ owner?.displayName }} </b>
               </div>
               <div
@@ -118,7 +118,7 @@ const handleApproved = async () => {
               </div>
             </div>
 
-            <div class=":uno: flex items-center">
+            <div class=":uno: moment-feed-meta flex items-center">
               <div class=":uno: mr-2 cursor-default text-xs text-gray-500">
                 <span
                   v-tooltip="{
@@ -147,7 +147,7 @@ const handleApproved = async () => {
             </div>
           </div>
 
-          <div class=":uno: mt-3">
+          <div class=":uno: moment-feed-body mt-3">
             <MomentEdit
               v-if="editing"
               :moment="listedMoment?.moment"
