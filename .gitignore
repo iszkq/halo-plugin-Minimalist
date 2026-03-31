@@ -79,3 +79,6 @@ application-local.properties
 /workplace/
 /src/main/resources/console/
 /src/main/resources/templates/
+!/src/main/resources/templates/
+!/src/main/resources/templates/moment.html
+!/src/main/resources/templates/moments.html
