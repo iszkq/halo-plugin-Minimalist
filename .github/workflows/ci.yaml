@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      JAVA_VERSION: "17"
+      NODE_VERSION: "20"
+      PNPM_VERSION: "10"
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: gradle
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+          cache-dependency-path: console/pnpm-lock.yaml
+
+      - name: Prepare Gradle wrapper
+        run: chmod +x ./gradlew
+
+      - name: Compute plugin version
+        id: version
+        shell: bash
+        run: echo "value=1.0.${GITHUB_RUN_ID}" >> "$GITHUB_OUTPUT"
+
+      - name: Build plugin
+        env:
+          PLUGIN_VERSION: ${{ steps.version.outputs.value }}
+        run: ./gradlew build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-moments-${{ steps.version.outputs.value }}
+          path: build/libs/*.jar
+          if-no-files-found: error
