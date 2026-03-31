@@ -45,7 +45,7 @@ jobs:
       - name: Compute plugin version
         id: version
         shell: bash
-        run: echo "value=1.0.1" >> "$GITHUB_OUTPUT"
+        run: echo "value=1.0.2" >> "$GITHUB_OUTPUT"
 
       - name: Build plugin
         env:
