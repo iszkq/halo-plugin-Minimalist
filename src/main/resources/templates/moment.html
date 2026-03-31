@@ -1,0 +1,300 @@
+<!doctype html>
+<html
+  lang="zh-CN"
+  xmlns:th="https://www.thymeleaf.org"
+  th:with="
+    authorName=${#strings.isEmpty(moment.owner.displayName) ? moment.owner.name : moment.owner.displayName},
+    content=${moment.spec.content},
+    mediaCount=${content.medium == null ? 0 : content.medium.size()},
+    mediaGridClass=${mediaCount == 1 ? 'single' : (mediaCount == 2 ? 'double' : '')},
+    releaseFullText=${moment.spec.releaseTime == null ? '未设置时间' : T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd HH:mm').withZone(T(java.time.ZoneId).systemDefault()).format(moment.spec.releaseTime)},
+    releaseShortText=${moment.spec.releaseTime == null ? '未设置时间' : T(java.time.format.DateTimeFormatter).ofPattern('MM-dd HH:mm').withZone(T(java.time.ZoneId).systemDefault()).format(moment.spec.releaseTime)},
+    caption=${authorName + ' · ' + (moment.spec.releaseTime == null ? '未设置时间' : T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd HH:mm').withZone(T(java.time.ZoneId).systemDefault()).format(moment.spec.releaseTime))}
+  "
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+    <meta name="turbo-visit-control" content="reload" />
+    <title th:text="|${title ?: '瞬间'} - ${authorName}|">瞬间详情</title>
+    <style>
+      :root{--bg:#eef2f6;--panel:#ffffff;--soft:#f6f7f9;--soft-2:#f1f3f6;--text:#17181a;--muted:#7f8691;--blue:#576b95;--green:#07c160;--line:#e4e7eb;--shadow:0 20px 48px rgba(17,24,39,.08);--radius:28px;--feed:860px}
+      *{box-sizing:border-box}html{font-size:16px;scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#e9edf3 0%,#f5f7fa 36%,#eef2f6 100%);color:var(--text);font-family:"MiSans","HarmonyOS Sans SC","PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;line-height:1.75}
+      a{color:inherit;text-decoration:none}button,input,textarea,select{font:inherit}img,video{display:block;max-width:100%}
+      .minimalist-moment-root{min-height:100vh}
+      .shell{width:min(var(--feed),calc(100% - 18px));margin:0 auto;padding:12px 0 44px}
+      .hero,.card,.profile,.comments{border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.88);box-shadow:var(--shadow);backdrop-filter:blur(14px)}
+      .hero{position:relative;overflow:hidden;min-height:320px;padding:18px 20px 22px;border-radius:34px;background:
+        linear-gradient(160deg,rgba(12,24,44,.08),transparent 52%),
+        linear-gradient(180deg,rgba(10,19,34,.04),rgba(10,19,34,.54)),
+        radial-gradient(circle at 15% 24%,rgba(255,255,255,.42),transparent 28%),
+        radial-gradient(circle at 84% 16%,rgba(165,205,255,.36),transparent 22%),
+        linear-gradient(135deg,#8ba9c8 0%,#6483a8 34%,#506a8e 62%,#405573 100%)}
+      .hero::before{content:"";position:absolute;right:-24px;bottom:26px;width:180px;height:180px;border-radius:999px;background:rgba(255,255,255,.1)}
+      .hero-top{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+      .back{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(10,19,34,.18);border:1px solid rgba(255,255,255,.18);color:#fff;font-weight:700}
+      .hero-mark{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(10,19,34,.18);border:1px solid rgba(255,255,255,.18);color:#f3f6fb;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase}
+      .hero-bottom{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:18px;margin-top:104px}
+      .hero-copy h1{margin:0;font-size:clamp(2.2rem,5vw,4rem);line-height:1.02;font-weight:800;letter-spacing:-.04em;color:#fff;text-shadow:0 12px 40px rgba(0,0,0,.24)}
+      .hero-copy p{max-width:34rem;margin:12px 0 0;color:rgba(255,255,255,.84)}
+      .hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+      .hero-meta span{display:inline-flex;align-items:center;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);color:#fff}
+      .hero-avatar{width:96px;height:96px;border-radius:26px;overflow:hidden;border:4px solid rgba(255,255,255,.86);background:linear-gradient(135deg,#eff3f8,#dbe4ee);box-shadow:0 14px 34px rgba(0,0,0,.18)}
+      .hero-avatar img{width:100%;height:100%;object-fit:cover}
+      .hero-avatar-fallback{width:100%;height:100%;display:grid;place-items:center;font-size:2rem;font-weight:800;color:#536785}
+      .card,.profile,.comments{border-radius:28px}
+      .card{display:grid;grid-template-columns:56px minmax(0,1fr);gap:14px;margin-top:12px;padding:18px}
+      .avatar{width:56px;height:56px;border-radius:18px;overflow:hidden;background:linear-gradient(135deg,#eff3f8,#dbe4ee)}
+      .avatar img{width:100%;height:100%;object-fit:cover}
+      .avatar-fallback{width:100%;height:100%;display:grid;place-items:center;font-size:1.15rem;font-weight:800;color:#526782}
+      .name{margin:0;font-size:1.08rem;font-weight:700;color:var(--blue)}
+      .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;color:var(--muted);font-size:.91rem}
+      .content{margin-top:10px;color:var(--text);font-size:1rem;word-break:break-word}
+      .content>*:first-child{margin-top:0}.content>*:last-child{margin-bottom:0}
+      .content a{color:var(--blue)}.content blockquote{margin:14px 0 0;padding:12px 14px;border-left:3px solid rgba(87,107,149,.3);background:var(--soft);border-radius:0 14px 14px 0}
+      .content code{padding:.18em .42em;border-radius:8px;background:var(--soft-2);font-size:.92em}
+      .content pre{overflow:auto;padding:14px;border-radius:16px;background:#1f2430;color:#eef2f8}.content pre code{padding:0;background:transparent}
+      .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+      .tags a{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;background:#f1f5fb;color:var(--blue);font-size:.86rem}
+      .media{margin-top:12px}
+      .media-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+      .media-grid.single{grid-template-columns:minmax(0,420px)}
+      .media-grid.double{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .media-card,.post-card,.audio-card{overflow:hidden;border:1px solid var(--line);border-radius:18px;background:var(--soft)}
+      .media-card{position:relative;min-height:150px;padding:0;cursor:pointer}
+      .media-card img,.media-card video{width:100%;height:100%;min-height:150px;object-fit:cover}
+      .badge{position:absolute;right:10px;bottom:10px;display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;border-radius:999px;background:rgba(15,23,42,.72);color:#fff;font-size:.8rem}
+      .post-card,.audio-card{grid-column:1 / -1;padding:14px}
+      .post-card em,.audio-card em{display:block;color:var(--muted);font-style:normal;font-size:.8rem}
+      .post-card b,.audio-card strong{display:block;margin-top:6px;font-size:1rem}
+      .post-card .url{margin-top:4px;color:var(--blue);font-size:.9rem;word-break:break-all}
+      .audio-card audio{width:100%;margin-top:12px}
+      .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+      .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--soft);color:var(--muted)}
+      .chip strong{color:var(--text)}
+      .chip.like{cursor:pointer;color:var(--blue)}
+      .chip.liked{color:#c74b5f;background:#fff2f4;border-color:rgba(199,75,95,.22)}
+      .chip.error{border-color:rgba(199,75,95,.44)}
+      .profile,.comments{margin-top:12px;padding:18px}
+      .profile-top{display:flex;align-items:center;gap:14px}
+      .profile-avatar{width:72px;height:72px;border-radius:22px;overflow:hidden;background:linear-gradient(135deg,#eff3f8,#dbe4ee)}
+      .profile-avatar img{width:100%;height:100%;object-fit:cover}
+      .profile-avatar-fallback{width:100%;height:100%;display:grid;place-items:center;font-size:1.4rem;font-weight:800;color:#526782}
+      .profile-text strong{display:block;font-size:1.12rem;color:var(--blue)}
+      .profile-text span{display:block;margin-top:4px;color:var(--muted)}
+      .profile-bio{margin:12px 0 0;color:var(--muted)}
+      .profile-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+      .profile-stat{padding:12px;border-radius:18px;background:var(--soft);border:1px solid var(--line)}
+      .profile-stat span{display:block;color:var(--muted);font-size:.8rem}
+      .profile-stat strong{display:block;margin-top:4px;font-size:1.06rem}
+      .profile-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+      .profile-links a{display:inline-flex;align-items:center;padding:8px 12px;border-radius:999px;background:var(--soft);border:1px solid var(--line);color:var(--muted)}
+      .comments-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+      .comments-head h2{margin:0;font-size:1.1rem}
+      .comments-head span{color:var(--muted);font-size:.92rem}
+      .comments-body{margin-top:12px;padding:14px;border-radius:18px;background:var(--soft);border:1px solid var(--line)}
+      .lightbox{position:fixed;inset:0;z-index:80;display:none}
+      .lightbox.open{display:block}
+      .lightbox-bg{position:absolute;inset:0;background:rgba(15,23,42,.78);backdrop-filter:blur(14px)}
+      .lightbox-dialog{position:relative;width:min(980px,calc(100% - 20px));margin:24px auto;padding:16px;border-radius:24px;background:rgba(255,255,255,.96)}
+      .lightbox-close{display:inline-flex;align-items:center;justify-content:center;margin-left:auto;padding:8px 12px;border:0;border-radius:999px;background:var(--soft-2);color:var(--text)}
+      .lightbox-content{display:grid;place-items:center;margin-top:10px}
+      .lightbox-content img,.lightbox-content video{width:100%;max-height:72vh;border-radius:18px;object-fit:contain;background:#111827}
+      .lightbox-caption{margin:12px 0 0;color:var(--muted);font-size:.92rem}
+      .lightbox-open{overflow:hidden}
+      @media (max-width:760px){.shell{width:min(var(--feed),calc(100% - 12px));padding-top:8px}.hero{min-height:300px;border-radius:28px}.hero-bottom{grid-template-columns:1fr;margin-top:82px}.card{grid-template-columns:46px minmax(0,1fr);padding:14px}.avatar{width:46px;height:46px;border-radius:15px}.media-grid,.media-grid.double,.media-grid.single{grid-template-columns:repeat(2,minmax(0,1fr))}.profile-stats{grid-template-columns:1fr}.hero-avatar{width:78px;height:78px;border-radius:22px}}
+      @media (max-width:460px){.hero-copy h1{font-size:2.35rem}.hero-top{flex-direction:column;align-items:flex-start}.media-grid,.media-grid.double,.media-grid.single{grid-template-columns:1fr}}
+    </style>
+  </head>
+  <body class="minimalist-moment-body" data-minimalist-moments="standalone">
+    <div id="minimalist-moment-root" class="minimalist-moment-root page-main main-content content-area pjax-container" data-no-swup data-turbo="false" data-pjax="false">
+    <main class="shell">
+      <section class="hero">
+        <div class="hero-top">
+          <a class="back" th:href="@{/moments}">返回瞬间</a>
+          <span class="hero-mark">Moment Detail</span>
+        </div>
+        <div class="hero-bottom">
+          <div class="hero-copy">
+            <h1 th:text="${title ?: '瞬间'}">瞬间</h1>
+            <p th:text="${content.raw ?: '一条被单独展开的公开瞬间。'}">一条被单独展开的公开瞬间。</p>
+            <div class="hero-meta">
+              <span th:text="${authorName}">作者</span>
+              <span th:text="${releaseFullText}">2026-03-31 13:30</span>
+            </div>
+          </div>
+          <div class="hero-avatar">
+            <img th:if="${not #strings.isEmpty(moment.owner.avatar)}" th:src="${moment.owner.avatar}" th:alt="${authorName}" />
+            <div class="hero-avatar-fallback" th:if="${#strings.isEmpty(moment.owner.avatar)}" th:text="${#strings.substring(authorName, 0, 1)}">M</div>
+          </div>
+        </div>
+      </section>
+
+      <article class="card">
+        <div class="avatar">
+          <img th:if="${not #strings.isEmpty(moment.owner.avatar)}" th:src="${moment.owner.avatar}" th:alt="${authorName}" />
+          <div class="avatar-fallback" th:if="${#strings.isEmpty(moment.owner.avatar)}" th:text="${#strings.substring(authorName, 0, 1)}">M</div>
+        </div>
+
+        <div>
+          <h2 class="name" th:text="${authorName}">Moment Owner</h2>
+          <div class="meta">
+            <span th:text="${releaseFullText}">2026-03-31 13:30</span>
+            <span th:if="${not #strings.isEmpty(moment.owner.bio)}" th:text="${moment.owner.bio}">作者简介</span>
+          </div>
+
+          <div class="content" th:if="${not #strings.isEmpty(content.html)}" th:utext="${content.html}">瞬间内容</div>
+
+          <div class="tags" th:if="${moment.spec.tags != null and !moment.spec.tags.isEmpty()}">
+            <a th:each="itemTag : ${moment.spec.tags}" th:href="@{|/moments?tag=${itemTag}|}" th:text="|#${itemTag}|">#标签</a>
+          </div>
+
+          <div class="media" th:if="${content.medium != null and !content.medium.isEmpty()}">
+            <div class="media-grid" th:classappend="| ${mediaGridClass}|">
+              <th:block th:each="media : ${content.medium}">
+                <button th:if="${media.type != null and media.type.name() == 'PHOTO'}" class="media-card" type="button" data-media-preview data-media-type="image" th:attr="data-media-src=${media.url},data-media-caption=${caption}">
+                  <img th:src="${media.url}" th:alt="${caption}" />
+                </button>
+                <button th:if="${media.type != null and media.type.name() == 'VIDEO'}" class="media-card" type="button" data-media-preview data-media-type="video" th:attr="data-media-src=${media.url},data-media-caption=${caption}">
+                  <video th:src="${media.url}" muted playsinline preload="metadata"></video>
+                  <span class="badge">播放</span>
+                </button>
+                <a th:if="${media.type != null and media.type.name() == 'POST'}" class="post-card" th:href="${media.url}" target="_blank" rel="noopener noreferrer">
+                  <em>外部内容</em>
+                  <b>打开原始链接</b>
+                  <div class="url" th:text="${media.url}">https://example.com</div>
+                </a>
+                <div th:if="${media.type != null and media.type.name() == 'AUDIO'}" class="audio-card">
+                  <em>音频</em>
+                  <strong>收听这条瞬间里的声音</strong>
+                  <audio th:src="${media.url}" controls preload="none"></audio>
+                </div>
+              </th:block>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="chip like" type="button" data-upvote-button data-upvote-key="moment" data-upvote-group="moment.halo.run" data-upvote-plural="moments" th:attr="data-upvote-name=${moment.metadata.name}">
+              <span>点赞</span>
+              <strong data-upvote-count th:text="${moment.stats.upvote}">0</strong>
+            </button>
+            <span class="chip">
+              <span>评论</span>
+              <strong th:text="${moment.stats.approvedComment}">0</strong>
+            </span>
+            <span class="chip">
+              <span>发布于</span>
+              <strong th:text="${releaseShortText}">03-31 13:30</strong>
+            </span>
+          </div>
+        </div>
+      </article>
+
+      <section class="profile">
+        <div class="profile-top">
+          <div class="profile-avatar">
+            <img th:if="${not #strings.isEmpty(moment.owner.avatar)}" th:src="${moment.owner.avatar}" th:alt="${authorName}" />
+            <div class="profile-avatar-fallback" th:if="${#strings.isEmpty(moment.owner.avatar)}" th:text="${#strings.substring(authorName, 0, 1)}">M</div>
+          </div>
+          <div class="profile-text">
+            <strong th:text="${authorName}">Moment Owner</strong>
+            <span>瞬间发布者</span>
+          </div>
+        </div>
+
+        <p class="profile-bio" th:text="${moment.owner.bio ?: '用瞬间记录正在发生的日常。'}">用瞬间记录正在发生的日常。</p>
+
+        <div class="profile-stats">
+          <article class="profile-stat"><span>点赞</span><strong th:text="${moment.stats.upvote}">0</strong></article>
+          <article class="profile-stat"><span>评论</span><strong th:text="${moment.stats.approvedComment}">0</strong></article>
+          <article class="profile-stat"><span>发布时间</span><strong th:text="${releaseShortText}">03-31 13:30</strong></article>
+        </div>
+
+        <div class="profile-links">
+          <a th:href="@{/moments}">继续浏览全部瞬间</a>
+          <a th:href="@{/feed/moments/rss.xml}">订阅 Moments RSS</a>
+        </div>
+      </section>
+
+      <section class="comments">
+        <div class="comments-head">
+          <h2>评论这条瞬间</h2>
+          <span th:text="|当前 ${moment.stats.approvedComment} 条公开评论|">当前 0 条公开评论</span>
+        </div>
+        <div class="comments-body">
+          <halo:comment group="moment.halo.run" kind="Moment" th:attr="name=${moment.metadata.name}" />
+        </div>
+      </section>
+    </main>
+    </div>
+
+    <script>
+      (() => {
+        document.querySelectorAll('a[href^="/"]').forEach((link) => {
+          link.setAttribute("data-no-swup", "");
+          link.setAttribute("data-no-instant", "");
+          link.setAttribute("data-turbo", "false");
+          link.setAttribute("data-pjax", "false");
+        });
+
+        const readUpvotedNames = (k) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : []; } catch { return []; } };
+        const writeUpvotedNames = (k, n) => { try { localStorage.setItem(k, JSON.stringify(n)); } catch {} };
+        document.querySelectorAll("[data-upvote-button]").forEach((button) => {
+          const key = button.dataset.upvoteKey || "moment";
+          const name = button.dataset.upvoteName;
+          const group = button.dataset.upvoteGroup;
+          const plural = button.dataset.upvotePlural;
+          if (!name || !group || !plural) return;
+          const storageKey = `halo.upvoted.${key}.names`;
+          let upvotedNames = readUpvotedNames(storageKey);
+          if (upvotedNames.includes(name)) button.classList.add("liked");
+          button.addEventListener("click", async () => {
+            if (button.classList.contains("liked")) return;
+            button.disabled = true;
+            try {
+              const response = await fetch("/apis/api.halo.run/v1alpha1/trackers/upvote", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ group, plural, name }) });
+              if (!response.ok) throw new Error(`Upvote failed with status ${response.status}`);
+              button.classList.add("liked");
+              upvotedNames = [...upvotedNames, name];
+              writeUpvotedNames(storageKey, upvotedNames);
+              const countNode = button.querySelector("[data-upvote-count]");
+              const currentCount = parseInt((countNode && countNode.textContent) || "0", 10) || 0;
+              if (countNode) countNode.textContent = String(currentCount + 1);
+            } catch (error) {
+              console.error(error);
+              button.classList.add("error");
+              window.setTimeout(() => button.classList.remove("error"), 1600);
+            } finally {
+              button.disabled = false;
+            }
+          });
+        });
+
+        const triggers = document.querySelectorAll("[data-media-preview]");
+        if (!triggers.length) return;
+        const root = document.createElement("div");
+        root.className = "lightbox";
+        root.innerHTML = '<div class="lightbox-bg" data-close></div><div class="lightbox-dialog"><button class="lightbox-close" type="button" data-close>关闭</button><div class="lightbox-content"></div><p class="lightbox-caption"></p></div>';
+        document.body.append(root);
+        const contentBox = root.querySelector(".lightbox-content");
+        const captionBox = root.querySelector(".lightbox-caption");
+        const close = () => { root.classList.remove("open"); contentBox.innerHTML = ""; captionBox.textContent = ""; document.body.classList.remove("lightbox-open"); };
+        root.addEventListener("click", (event) => { if (event.target.closest("[data-close]")) close(); });
+        document.addEventListener("keydown", (event) => { if (event.key === "Escape") close(); });
+        triggers.forEach((trigger) => {
+          trigger.addEventListener("click", () => {
+            const src = trigger.dataset.mediaSrc;
+            const type = trigger.dataset.mediaType || "image";
+            const text = trigger.dataset.mediaCaption || "瞬间媒体";
+            if (!src) return;
+            contentBox.innerHTML = type === "video" ? `<video src="${src}" controls autoplay playsinline></video>` : `<img src="${src}" alt="${text}" />`;
+            captionBox.textContent = text;
+            root.classList.add("open");
+            document.body.classList.add("lightbox-open");
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>
