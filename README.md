@@ -1,6 +1,6 @@
-# plugin-moments
+# halo-plugin-Minimalist
 
-Halo 2 瞬间插件，已经内置前台渲染页面，不再强依赖主题提供 `moments.html` 或 `moment.html`。
+Minimalist 瞬间插件，已经内置前台渲染页面，不再强依赖主题提供 `moments.html` 或 `moment.html`。
 
 ## 功能
 
@@ -38,4 +38,5 @@ GitHub Actions 会自动构建并生成新的版本号：
 
 - 当前项目目录：`C:\Users\Administrator\Desktop\halo-plugin-Minimalist`
 - 当前保留的是插件运行、后台管理、前台模板、GitHub 打包所需的最小核心文件
+- 插件唯一标识已改为 `PluginMinimalistMoments`
 - 如果主题后续自带 `moments.html` 或 `moment.html`，Halo 会优先使用主题模板

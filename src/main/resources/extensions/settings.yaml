@@ -1,7 +1,7 @@
 apiVersion: v1alpha1
 kind: Setting
 metadata:
-  name: plugin-moments-settings
+  name: plugin-minimalist-moments-settings
 spec:
   forms:
     - group: base

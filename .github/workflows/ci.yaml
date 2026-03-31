@@ -54,6 +54,6 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: plugin-moments-${{ steps.version.outputs.value }}
+          name: halo-plugin-Minimalist-${{ steps.version.outputs.value }}
           path: build/libs/*.jar
           if-no-files-found: error

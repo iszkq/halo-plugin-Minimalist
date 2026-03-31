@@ -63,6 +63,6 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
-          name: plugin-moments-release-${{ steps.version.outputs.value }}
+          name: halo-plugin-Minimalist-release-${{ steps.version.outputs.value }}
           path: build/libs/*.jar
           if-no-files-found: error
